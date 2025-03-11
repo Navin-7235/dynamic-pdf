@@ -2,7 +2,7 @@ import { Page, View, Text, StyleSheet, Image, Document } from "@react-pdf/render
 
 
 const styles = StyleSheet.create({
-    page: { padding: 20, fontFamily: 'Times-Roman', position: 'relative' },
+    page: { padding: 20, fontFamily: 'Times-Roman', position: 'relative', },
     section: { display: 'flex', alignItems: 'center' },
     border: {
         borderBottomWidth: 1,
@@ -37,17 +37,14 @@ const styles = StyleSheet.create({
         borderTopColor: 'black',
         borderTopStyle: 'solid',
         paddingTop: 5,
-        zIndex: 2,
+        zIndex: 0,
     },
     watermark: {
         position: 'absolute',
-        top: '10%',
-        left:'10%',
-        transform: 'translate(-50%, -50%) ',
-        opacity: 0.5, 
-        width: '90%',
-        zIndex: -1, 
-        fontSize:48
+        width: '100%',
+        opacity: 0.9,
+        zIndex: -1,
+
     },
     para: { textAlign: 'justify', margin: '0 auto', fontSize: 12, width: '90%', lineHeight: 1.5, },
     parahead: { fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginBottom: 15 }
@@ -56,7 +53,7 @@ const styles = StyleSheet.create({
 const Header = ({ reportNo }) => (
     <View style={styles.header}>
         <Text style={{ fontSize: 12, }}>Report- {reportNo}</Text>
-        <Image style={{ width: 130}} src="images/SolinaHeader.png" />
+        <Image style={{ width: 130 }} src="images/SolinaHeader.png" />
     </View>
 );
 
@@ -68,7 +65,7 @@ const Footer = () => (
 
 const WaterMark = () => (
     <View style={styles.watermark}>
-        <Image src="images/waterMarkSolinas.png" />
+        <Image src="images/waterMarkSolinas (2).png" cache={true} />
     </View>
 )
 
@@ -95,7 +92,7 @@ function MyDocument({ data }) {
     const pages = [
 
         <Page size="A4" style={styles.page} key={1}>
-            <WaterMark/>
+            <WaterMark />
             <View style={styles.section}>
                 <View style={styles.border} />
             </View>
@@ -127,25 +124,27 @@ function MyDocument({ data }) {
                     </Text>
                 </View>
             </View>
-       
+
 
         </Page>,
 
         <Page style={styles.page} key={2}>
-            <WaterMark/>
-            <Image style={styles.watermark} src="images/waterMark.png"/>
+            <WaterMark />
+            <Image style={styles.watermark} src="images/waterMark.png" />
             <Header reportNo={data.reportNo} />
             <View style={styles.parahead}>
                 <Text style={{ marginTop: 10 }}>NOTICE</Text>
             </View>
             <View style={styles.para}>
                 <Text style={{ marginTop: 10 }}>
-                    The information contained in this report is provided for interpretation by a suitably qualified civil engineering professional engaged by the Client presented. This report is not intended and must not be
+                    The information contained in this report is provided for interpretation by a suitably qualified civil engineering 
+                    professional engaged by the Client presented. This report is not intended and must not be
                     taken as professional civil engineering advice, nor shall it be relied upon as a substitute for professional
                     civil engineering advice. Interpretation of this report, evaluation of the pipelines, and any rehabilitation,
                     investigative, cleaning, or other decisions are the sole responsibility of the Client. Certain information
                     contained in this report such as distances and dimensions may incorporate information provided by others.
-                    The information may not always be accurate and complete. The engineer should make their own assessments regarding such information. The information contained in this document may be confidential. It
+                    The information may not always be accurate and complete. The engineer should make their own assessments regarding 
+                    such information. The information contained in this document may be confidential. It
                     is intended only for the use of the Client. However, any disclosure, reproduction, distribution, or other
                     dissemination or use of the information contained in this document is not to be done to other parties
                     without the written consent of Solinas Integrity Private Limited.
@@ -155,7 +154,7 @@ function MyDocument({ data }) {
                 <Text style={{ marginTop: 15 }}>EXECUTIVE SUMMARY</Text>
             </View>
             <View style={styles.para}>
-                <Text style={{ marginBottom: 10 }}>
+                <Text style={{ marginBottom: 10, }}>
                     Solinas Inspection Service provides pipeline solution that comes with the dashboard that helps
                     tracking, maintaining, and analysing the information. It has features that helps in planning for the
                     inspections (Inspection Management), tracking the status of the issue (resolved/unresolved),
@@ -190,7 +189,7 @@ function MyDocument({ data }) {
         </Page>,
 
         <Page style={styles.page} key={3}>
-            <WaterMark/>
+            <WaterMark />
             <Header reportNo={data.reportNo} />
             <View style={[styles.para, { marginTop: 10 }]}>
                 <Text><Text style={{ fontWeight: 'bold' }}>Installation of inspection equipment:</Text> Once the site was prepared for inspection, it was handed
@@ -334,7 +333,7 @@ function MyDocument({ data }) {
         </Page>,
 
         <Page style={styles.page} key={5}>
-            <WaterMark/>
+            <WaterMark />
             <Header reportNo={data.reportNo} />
             <View style={styles.parahead}>
 
@@ -378,87 +377,85 @@ function MyDocument({ data }) {
     const getDescriptionSpacing = (description) => {
         if (!description) return { marginTop: 40 };
         const lineCount = description.length / 100;
-
         if (lineCount > 3) {
             return { marginTop: 15 };
         }
         return { marginTop: 20 };
     };
-    const defectPages = data.Defectimage && data.Defectimage.length > 0
+    
+    const defectPages = (data.Defectimage && Array.isArray(data.Defectimage) && data.Defectimage.length > 0)
         ? data.Defectimage.reduce((acc, image, index) => {
-            const currentDefectNo = data.DefectNo[index];
-            const previousDefectNo = index > 0 ? data.DefectNo[index - 1] : null;
-            const isNewDefect = currentDefectNo !== previousDefectNo;
-
-            const imageUrl = image;
-
-
-            if (index % 2 === 0) {
-                acc.push(
-                    <Page style={styles.page} key={`defect-page-${index}`}>
-                        <WaterMark/>
-                        <Header reportNo={data.reportNo} />
-                        <View style={{ fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginBottom: 5 }}>
-                            <Text style={{ marginTop: 1 }}>Defect - {currentDefectNo}</Text>
-                        </View>
-                        <View style={{ width: '90%', height: '30%', margin: '0 auto', }}>
-                            <Image src={imageUrl} alt={`Defect image ${index}`} />
-                        </View>
-                        <View style={{ display: 'table', width: '90%', border: '1px solid black', margin: '0 auto', ...getDescriptionSpacing(data.Description[index]) }}>
-                            <View style={{ flexDirection: 'row', fontSize: 11, textAlign: 'center' }}>
-                                <Text style={{ flex: 1, borderRight: '1px solid black' }}>Distance</Text>
-                                <Text style={{ flex: 1, borderRight: '1px solid black' }}>{data.distance[index] ?? "-"}</Text>
-                                <Text style={{ flex: 2, borderRight: '1px solid black' }}>Defect Code</Text>
-                                <Text style={{ flex: 1, borderRight: '1px solid black' }}>{data.DefectCode[index] ?? "-"}</Text>
-                                <Text style={{ flex: 2, borderRight: '1px solid black' }}>Severity Grade</Text>
-                                <Text style={{ flex: 1 }}>{data.Severitygrade[index] ?? "-"}</Text>
+            try {
+                const currentDefectNo = data.DefectNo?.[index] ?? "N/A";
+                const imageUrl = image;
+    
+                
+    
+                if (index % 2 === 0) {
+                    acc.push(
+                        <Page style={styles.page} key={`defect-page-${index}`}>
+                            <WaterMark />
+                            <Header reportNo={data.reportNo ?? "N/A"} />
+                            <View style={{ fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginBottom: 5 }}>
+                                <Text style={{ marginTop: 1 }}>Defect - {currentDefectNo}</Text>
                             </View>
-                        </View>
-                        <View style={{ width: '90%', margin: '0 auto', fontSize: 11, border: '1px solid black', }}>
-                            <Text style={{ padding: 5 }}>Description{"\n"}</Text>
-                            <Text style={{ padding: 5 }}>{data.Description[index] ?? ""}</Text>
-                        </View>
-
-
-                        {data.Defectimage[index + 1] && (
-                            <>
-                                <View style={{ fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginBottom: 5 }}>
-                                    <Text style={{ marginTop: 5 }}>Defect - {data.DefectNo[index + 1]}</Text>
+                            <View style={{ width: '90%', height: '30%', margin: '0 auto' }}>
+                                <Image src={imageUrl ?? "No image Avialble"} alt={`Defect image ${index}`} />
+                            </View>
+                            <View style={{ display: 'table', width: '90%', border: '1px solid black', margin: '0 auto', ...getDescriptionSpacing(data.Description?.[index]) }}>
+                                <View style={{ flexDirection: 'row', fontSize: 11, textAlign: 'center' }}>
+                                    <Text style={{ flex: 1, borderRight: '1px solid black' }}>Distance</Text>
+                                    <Text style={{ flex: 1, borderRight: '1px solid black' }}>{data.distance?.[index] ?? "N/A"}</Text>
+                                    <Text style={{ flex: 2, borderRight: '1px solid black' }}>Defect Code</Text>
+                                    <Text style={{ flex: 1, borderRight: '1px solid black' }}>{data.DefectCode?.[index] ?? "N/A"}</Text>
+                                    <Text style={{ flex: 2, borderRight: '1px solid black' }}>Severity Grade</Text>
+                                    <Text style={{ flex: 1 }}>{data.Severitygrade?.[index] ?? "N/A"}</Text>
                                 </View>
-                                <View style={{ width: '90%', height: '30%', margin: '0 auto', }}>
-                                    <Image src={data.Defectimage[index + 1]} alt={`Defect image ${index + 1}`} />
-                                </View>
-                                <View style={{ display: 'table', width: '90%', border: '1px solid black', margin: '0 auto', ...getDescriptionSpacing(data.Description[index + 1]) }}>
-                                    <View style={{ flexDirection: 'row', fontSize: 11, textAlign: 'center' }}>
-                                        <Text style={{ flex: 1, borderRight: '1px solid black' }}>Distance</Text>
-                                        <Text style={{ flex: 1, borderRight: '1px solid black' }}>{data.distance[index + 1] ?? "-"}</Text>
-                                        <Text style={{ flex: 2, borderRight: '1px solid black' }}>Defect Code</Text>
-                                        <Text style={{ flex: 1, borderRight: '1px solid black' }}>{data.DefectCode[index + 1] ?? "-"}</Text>
-                                        <Text style={{ flex: 2, borderRight: '1px solid black' }}>Severity Grade</Text>
-                                        <Text style={{ flex: 1 }}>{data.Severitygrade[index + 1] ?? "-"}</Text>
+                            </View>
+                            <View style={{ width: '90%', margin: '0 auto', fontSize: 11, border: '1px solid black' }}>
+                                <Text style={{ padding: 5 }}>Description{"\n"}</Text>
+                                <Text style={{ padding: 5 }}>{data.Description?.[index] ?? ""}</Text>
+                            </View>
+                            {data.Defectimage?.[index + 1] && (
+                                <>
+                                    <View style={{ fontSize: 12, fontWeight: 'bold', textAlign: 'center', marginBottom: 5 }}>
+                                        <Text style={{ marginTop: 5 }}>Defect - {data.DefectNo?.[index + 1] ?? "N/A"}</Text>
                                     </View>
-                                </View>
-                                <View style={{ width: '90%', margin: '0 auto', fontSize: 11, border: '1px solid black' }}>
-                                    <Text style={{ padding: 5 }}>Description{"\n"}</Text>
-                                    <Text style={{ padding: 5 }}>{data.Description[index + 1] ?? ""}</Text>
-                                </View>
-                            </>
-                        )}
-                        <Footer />
-                    </Page>
-                );
+                                    <View style={{ width: '90%', height: '30%', margin: '0 auto' }}>
+                                        <Image src={data.Defectimage[index + 1] ?? "No image Avialble"} alt={`Defect image ${index + 1}`} />
+                                    </View>
+                                    <View style={{ display: 'table', width: '90%', border: '1px solid black', margin: '0 auto', ...getDescriptionSpacing(data.Description?.[index + 1]) }}>
+                                        <View style={{ flexDirection: 'row', fontSize: 11, textAlign: 'center' }}>
+                                            <Text style={{ flex: 1, borderRight: '1px solid black' }}>Distance</Text>
+                                            <Text style={{ flex: 1, borderRight: '1px solid black' }}>{data.distance?.[index + 1] ?? "N/A"}</Text>
+                                            <Text style={{ flex: 2, borderRight: '1px solid black' }}>Defect Code</Text>
+                                            <Text style={{ flex: 1, borderRight: '1px solid black' }}>{data.DefectCode?.[index + 1] ?? "N/A"}</Text>
+                                            <Text style={{ flex: 2, borderRight: '1px solid black' }}>Severity Grade</Text>
+                                            <Text style={{ flex: 1 }}>{data.Severitygrade?.[index + 1] ?? "N/A"}</Text>
+                                        </View>
+                                    </View>
+                                    <View style={{ width: '90%', margin: '0 auto', fontSize: 11, border: '1px solid black' }}>
+                                        <Text style={{ padding: 5 }}>Description{"\n"}</Text>
+                                        <Text style={{ padding: 5 }}>{data.Description?.[index + 1] ?? ""}</Text>
+                                    </View>
+                                </>
+                            )}
+                            <Footer />
+                        </Page>
+                    );
+                }
+            } catch (error) {
+                console.error(`Error generating defect page for index ${index}:`, error);
             }
-
             return acc;
         }, [])
         : [];
-
+    
     const allPages = [...pages, ...defectPages];
-
+    
     return (
         <Document>
             {allPages}
-
         </Document>
     );
 }
